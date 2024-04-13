@@ -3,8 +3,18 @@ description: Testbed for the shared_preferences_foundation implementation.
 publish_to: none
 
 environment:
+<<<<<<< HEAD
+<<<<<<< HEAD
   sdk: ">=3.1.0 <4.0.0"
   flutter: ">=3.13.0"
+=======
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.0"
+>>>>>>> refs/remotes/origin/main
+=======
+  sdk: ^3.2.3
+  flutter: ">=3.16.6"
+>>>>>>> refs/remotes/origin/main
 
 dependencies:
   flutter:
