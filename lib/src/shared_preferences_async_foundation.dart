@@ -1,4 +1,4 @@
-// Copyright 2013 The Flutter Authors. All rights reserved.
+// Copyright 2013 The Flutter Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -17,9 +17,8 @@ const String _argumentErrorCode = 'Argument Error';
 base class SharedPreferencesAsyncFoundation
     extends SharedPreferencesAsyncPlatform {
   /// Creates a new plugin implementation instance.
-  SharedPreferencesAsyncFoundation({
-    @visibleForTesting UserDefaultsApi? api,
-  }) : _api = api ?? UserDefaultsApi();
+  SharedPreferencesAsyncFoundation({@visibleForTesting UserDefaultsApi? api})
+    : _api = api ?? UserDefaultsApi();
 
   final UserDefaultsApi _api;
 
@@ -31,12 +30,11 @@ base class SharedPreferencesAsyncFoundation
 
   /// Returns a SharedPreferencesPigeonOptions for sending to platform.
   SharedPreferencesPigeonOptions _convertOptionsToPigeonOptions(
-      SharedPreferencesOptions options) {
+    SharedPreferencesOptions options,
+  ) {
     if (options is SharedPreferencesAsyncFoundationOptions) {
       final String? suiteName = options.suiteName;
-      return SharedPreferencesPigeonOptions(
-        suiteName: suiteName,
-      );
+      return SharedPreferencesPigeonOptions(suiteName: suiteName);
     }
     return SharedPreferencesPigeonOptions();
   }
@@ -47,15 +45,12 @@ base class SharedPreferencesAsyncFoundation
     SharedPreferencesOptions options,
   ) async {
     final PreferencesFilters filter = parameters.filter;
-    // TODO(tarrinneal): Remove cast once https://github.com/flutter/flutter/issues/97848
-    // is fixed. In practice, the values will never be null, and the native implementation assumes that.
     return (await _convertKnownExceptions<List<String>>(
-            () async => (await _api.getKeys(
-                  filter.allowList?.toList(),
-                  _convertOptionsToPigeonOptions(options),
-                ))
-                    .cast<String>()))!
-        .toSet();
+      () async => _api.getKeys(
+        filter.allowList?.toList(),
+        _convertOptionsToPigeonOptions(options),
+      ),
+    ))!.toSet();
   }
 
   Future<void> _setValue(
@@ -63,8 +58,9 @@ base class SharedPreferencesAsyncFoundation
     Object value,
     SharedPreferencesOptions options,
   ) async {
-    return _convertKnownExceptions<void>(() async =>
-        _api.set(key, value, _convertOptionsToPigeonOptions(options)));
+    return _convertKnownExceptions<void>(
+      () async => _api.set(key, value, _convertOptionsToPigeonOptions(options)),
+    );
   }
 
   @override
@@ -117,17 +113,20 @@ base class SharedPreferencesAsyncFoundation
     String key,
     SharedPreferencesOptions options,
   ) async {
-    return _convertKnownExceptions<String>(() async => (await _api.getValue(
-        key, _convertOptionsToPigeonOptions(options))) as String?);
+    return _convertKnownExceptions<String>(
+      () async =>
+          (await _api.getValue(key, _convertOptionsToPigeonOptions(options)))
+              as String?,
+    );
   }
 
   @override
-  Future<bool?> getBool(
-    String key,
-    SharedPreferencesOptions options,
-  ) async {
-    return _convertKnownExceptions<bool>(() async => await _api.getValue(
-        key, _convertOptionsToPigeonOptions(options)) as bool?);
+  Future<bool?> getBool(String key, SharedPreferencesOptions options) async {
+    return _convertKnownExceptions<bool>(
+      () async =>
+          await _api.getValue(key, _convertOptionsToPigeonOptions(options))
+              as bool?,
+    );
   }
 
   @override
@@ -135,17 +134,20 @@ base class SharedPreferencesAsyncFoundation
     String key,
     SharedPreferencesOptions options,
   ) async {
-    return _convertKnownExceptions<double>(() async => await _api.getValue(
-        key, _convertOptionsToPigeonOptions(options)) as double?);
+    return _convertKnownExceptions<double>(
+      () async =>
+          await _api.getValue(key, _convertOptionsToPigeonOptions(options))
+              as double?,
+    );
   }
 
   @override
-  Future<int?> getInt(
-    String key,
-    SharedPreferencesOptions options,
-  ) async {
-    return _convertKnownExceptions<int>(() async => await _api.getValue(
-        key, _convertOptionsToPigeonOptions(options)) as int?);
+  Future<int?> getInt(String key, SharedPreferencesOptions options) async {
+    return _convertKnownExceptions<int>(
+      () async =>
+          await _api.getValue(key, _convertOptionsToPigeonOptions(options))
+              as int?,
+    );
   }
 
   @override
@@ -153,13 +155,15 @@ base class SharedPreferencesAsyncFoundation
     String key,
     SharedPreferencesOptions options,
   ) async {
-    // TODO(tarrinneal): Remove cast once https://github.com/flutter/flutter/issues/97848
-    // is fixed. In practice, the values will never be null, and the native implementation assumes that.
-    return _convertKnownExceptions<List<String>>(() async =>
-        ((await _api.getValue(key, _convertOptionsToPigeonOptions(options)))
-                as List<Object?>?)
-            ?.cast<String>()
-            .toList());
+    // Since `getValue` is not strongly typed, the array type won't be set
+    // during deserialization, and needs to be manually cast.
+    return _convertKnownExceptions<List<String>>(
+      () async =>
+          ((await _api.getValue(key, _convertOptionsToPigeonOptions(options)))
+                  as List<Object?>?)
+              ?.cast<String>()
+              .toList(),
+    );
   }
 
   @override
@@ -168,10 +172,12 @@ base class SharedPreferencesAsyncFoundation
     SharedPreferencesOptions options,
   ) async {
     final PreferencesFilters filter = parameters.filter;
-    return _convertKnownExceptions<void>(() async => _api.clear(
-          filter.allowList?.toList(),
-          _convertOptionsToPigeonOptions(options),
-        ));
+    return _convertKnownExceptions<void>(
+      () async => _api.clear(
+        filter.allowList?.toList(),
+        _convertOptionsToPigeonOptions(options),
+      ),
+    );
   }
 
   @override
@@ -180,14 +186,12 @@ base class SharedPreferencesAsyncFoundation
     SharedPreferencesOptions options,
   ) async {
     final PreferencesFilters filter = parameters.filter;
-    final Map<String?, Object?>? data =
-        await _convertKnownExceptions<Map<String?, Object?>>(
-            () async => _api.getAll(
-                  filter.allowList?.toList(),
-                  _convertOptionsToPigeonOptions(options),
-                ));
-
-    return data!.cast<String, Object>();
+    return (await _convertKnownExceptions<Map<String, Object>>(
+      () async => _api.getAll(
+        filter.allowList?.toList(),
+        _convertOptionsToPigeonOptions(options),
+      ),
+    ))!;
   }
 
   Future<T?> _convertKnownExceptions<T>(Future<T?> Function() method) async {
@@ -197,7 +201,8 @@ base class SharedPreferencesAsyncFoundation
     } on PlatformException catch (e) {
       if (e.code == _argumentErrorCode) {
         throw ArgumentError(
-            'shared_preferences_foundation argument error ${e.message ?? ''}');
+          'shared_preferences_foundation argument error ${e.message ?? ''}',
+        );
       } else {
         rethrow;
       }
@@ -209,9 +214,7 @@ base class SharedPreferencesAsyncFoundation
 @immutable
 class SharedPreferencesAsyncFoundationOptions extends SharedPreferencesOptions {
   /// Creates a new instance with the given options.
-  SharedPreferencesAsyncFoundationOptions({
-    this.suiteName,
-  }) {
+  SharedPreferencesAsyncFoundationOptions({this.suiteName}) {
     // Ensure that use of suite is compliant with required reason API category 1C8F.1; see
     // https://developer.apple.com/documentation/bundleresources/privacy_manifest_files/describing_use_of_required_reason_api
     if (Platform.isIOS && !(suiteName?.startsWith('group.') ?? true)) {
@@ -230,7 +233,8 @@ class SharedPreferencesAsyncFoundationOptions extends SharedPreferencesOptions {
   /// Returns a new instance of [SharedPreferencesAsyncFoundationOptions] from an existing
   /// [SharedPreferencesOptions].
   static SharedPreferencesAsyncFoundationOptions fromSharedPreferencesOptions(
-      SharedPreferencesOptions options) {
+    SharedPreferencesOptions options,
+  ) {
     if (options is SharedPreferencesAsyncFoundationOptions) {
       return options;
     }

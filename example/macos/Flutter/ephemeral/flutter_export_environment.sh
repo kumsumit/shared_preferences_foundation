@@ -1,7 +1,7 @@
 #!/bin/sh
 # This is a generated file; do not edit or check into version control.
-export "FLUTTER_ROOT=/home/sumit/softwares/flutter"
-export "FLUTTER_APPLICATION_PATH=/home/sumit/StudioProjects/packages/packages/shared_preferences/shared_preferences_foundation/example"
+export "FLUTTER_ROOT=/Users/amitsharan/development/flutter"
+export "FLUTTER_APPLICATION_PATH=/Users/amitsharan/StudioProjects/shared_preferences/shared_preferences_foundation/example"
 export "COCOAPODS_PARALLEL_CODE_SIGN=true"
 export "FLUTTER_BUILD_DIR=build"
 export "FLUTTER_BUILD_NAME=1.0.0"

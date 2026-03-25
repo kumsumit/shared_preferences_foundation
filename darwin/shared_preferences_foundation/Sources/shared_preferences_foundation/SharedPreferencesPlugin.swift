@@ -1,4 +1,4 @@
-// Copyright 2013 The Flutter Authors. All rights reserved.
+// Copyright 2013 The Flutter Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -25,7 +25,7 @@ public class LegacySharedPreferencesPlugin: NSObject, FlutterPlugin, LegacyUserD
     LegacyUserDefaultsApiSetup.setUp(binaryMessenger: messenger, api: instance)
   }
 
-  func getAll(prefix: String, allowList: [String]?) -> [String?: Any?] {
+  func getAll(prefix: String, allowList: [String]?) -> [String: Any] {
     return getAllPrefs(prefix: prefix, allowList: allowList)
   }
 
